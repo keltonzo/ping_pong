@@ -29,12 +29,20 @@ class Player(GameSprite):
 
 pl1 = Player('raketka.png', 595, 330, 7, 65, 85, K_UP, K_DOWN)
 pl2 = Player('raketka.png', 40, 330, 7, 65, 85, K_w, K_s)
+ball = GameSprite('ball.png', 125, 225, 5, 50, 50, K_u, K_i)
 font.init()
 font1 = font.Font(None, 36)
 run = True 
 finish = False
 FPS = 40
 clock = time.Clock()
+sp_x = 3
+sp_y = 3
+players = sprite.Group()
+players.add(pl1)
+players.add(pl2)
+lose1 = font1.render('PLAYER 2 LOSE!', True, (180, 0, 0))
+lose2 = font1.render('PLAYER 1 LOSE!', True, (180, 0, 0))
 while run:
     for e in event.get():
         if e.type == QUIT:
@@ -46,13 +54,21 @@ while run:
         pl1.update()
         pl2.reset()
         pl2.update()
-    #for c in collides:
-    #    score += 1
-    #    monster = Enemy('ufo.png', randint(50, 650), 0, 2, 65, 65)
-    #    monsters.add(monster)
+        ball.reset()
+        ball.rect.x += sp_x 
+        ball.rect.y += sp_y 
         
-    #if sprite.spritecollide(ship, monsters, True) or lost == 1:
-        
+    if sprite.spritecollide(ball, players, False):
+        sp_x = -(sp_x)
+    if ball.rect.y <= 0 or ball.rect.y >= 450:
+        sp_y = -(sp_y)
+
+    if ball.rect.x <= 0:
+        finish = True 
+        window.blit(lose2, (250, 200))
+    if ball.rect.x >= 700:
+        finish = True 
+        window.blit(lose1, (250, 200))
   
     display.update()
-    clock.tick(FPS) 
+    clock.tick(FPS)
